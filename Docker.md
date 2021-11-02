@@ -4,10 +4,10 @@ Finding the files 'find / -iname xyz.txt'
 Reading Files 'tail xyz.txt'  
 
 #Docker Commands
-go as admin instead of typing the su always 'sudo su' & hit enter.
-docker ps (To see the container)
-docker stats (To see the stats)
-docker stats --no-stream (To see the stats without streaming)
-docker inspect <container-id>
+go as admin instead of typing the su always 'sudo su' & hit enter.  
+docker ps (To see the container)  
+docker stats (To see the stats)  
+docker stats --no-stream (To see the stats without streaming)  
+docker inspect <container-id>  
     
     
