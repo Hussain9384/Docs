@@ -9,5 +9,7 @@
 * docker stats (To see the stats)  
 * docker stats --no-stream (To see the stats without streaming)  
 * docker inspect <container-id>  
-    
-    
+
+# RabbitMQ
+* Enter into container 'docker exec -it <container-id> bash'
+* Update disk_free_limit 'rabbitmqctl set_disk_free_limit 1GB' **(Note : Removed after container restart)**
