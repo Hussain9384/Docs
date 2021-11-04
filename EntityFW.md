@@ -1,2 +1,3 @@
-# Docs
-All the documents
+# Commands
+* add-migration RenameTenantName
+* update database
