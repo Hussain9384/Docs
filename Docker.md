@@ -8,7 +8,7 @@
 * docker ps (To see the container)  
 * docker stats (To see the stats)  
 * docker stats --no-stream (To see the stats without streaming)  
-* docker inspect <container-id>  
+* docker inspect (container-id)  
 * To see container size 'docker system df'
 * To see container size detailed view 'docker system df -v'
 * To see container wise size 'docker ps -s'
