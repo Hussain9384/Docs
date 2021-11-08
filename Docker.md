@@ -16,3 +16,4 @@
 # RabbitMQ
 * Enter into container 'docker exec -it <container-id> bash'
 * Update disk_free_limit 'rabbitmqctl set_disk_free_limit 1GB' **(Note : Removed after container restart)**
+* Dashboard related command 'rabbitmq-diagnostics status'
