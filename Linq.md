@@ -95,7 +95,18 @@
      3
      4
      5
-          
+     
+     
+     //SelectMany with root value name
+     var res = students.SelectMany(s=>s.Subjects,(st,subject) => new { name = st.Name , subject = subject} )
+     
+     foreach(var v in result)
+     {
+         Console.WriteLine($"{v.name} ==> {v.subject}");
+     }
+     
      ```
+     
+     
           
   
