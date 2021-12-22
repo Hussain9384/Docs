@@ -203,6 +203,103 @@
      //Enumerable deals with delegate functions public static IEnumerable<TResult> Select<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector);
      
      ```
+  * Grouping Operators
+     *  GroupBy
+     ```
+    employeeGroup = Employee.GetAllEmployees().GroupBy(x => x.Department).OrderBy(c => c.Key)
+    .Select(x => new
+    {
+     Key=x.Key,
+     employee = x.OrderBy(c => c.Name)
+    });
+    
+    foreach (var group in employeeGroup)
+    {
+       Console.WriteLine("{0} - {1}", group.Key, group.Employees.Count());
+       Console.WriteLine("----------");
+       foreach (var employee in group.Employees)
+       {
+         Console.WriteLine(employee.Name + "\t" + employee.Department);
+       }
+       Console.WriteLine(); Console.WriteLine();
+    }    
+     ```
+     *  GroupBy Muliple Keys
+    ```
+    var employeeGroups = Employee.GetAllEmployees()
+                                        .GroupBy(x => new { x.Department, x.Gender })
+                                        .OrderBy(g => g.Key.Department).ThenBy(g => g.Key.Gender)
+                                        .Select(g => new
+                                        {
+                                            Dept = g.Key.Department,
+                                            Gender = g.Key.Gender,
+                                            Employees = g.OrderBy(x => x.Name)
+                                        });
+
+     foreach(var group in employeeGroups)
+     {
+        Console.WriteLine("{0} department {1} employees count = {2}",
+        group.Dept, group.Gender, group.Employees.Count());
+        Console.WriteLine("--------------------------------------------");
+        foreach (var employee in group.Employees)
+        {
+            Console.WriteLine(employee.Name + "\t" + employee.Gender
+            + "\t" + employee.Department);
+        }
+        Console.WriteLine(); Console.WriteLine();
+    }
+    
+    ```
+    
+  *   Element Operators
+      * First / FirstOrDefault, Last / LastOrDefault, ElementAt / ElementAtOrDefault, Single / SingleOrDefault, DefaultIfEmpty  
+      ```
+      int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int result = numbers.First();
+      
+      //Throws InvalidOperationException.
+      int[] numbers = { };
+      int result = numbers.First();
+      
+      int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int result = numbers.First(x => x % 2 == 0);
+      
+      int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int result = numbers.FirstOrDefault(x => x % 2 == 100);
+      
+      //Last : Very similar to First, except it returns the last element of the sequence.
+
+      //LastOrDefault : Very similar to FirstOrDefault, except it returns the last element of the sequence.
+      
+      //ElementAt : Returns an element at a specified index. 
+      //If the sequence is empty or if the provided index value is out of range, then an ArgumentOutOfRangeException is thrown.
+      
+      //ElementAtOrDefault : Similar to ElementAt except that this method does not throw an exception, if the sequence is empty or if the provided index value is out of range.         Instead, a default value of the type that is expected is returned.
+
+      //Single() method throws an exception if the sequence is empty or has more than one element.
+      
+      //SingleOrDefault : Very similar to Single(), except this method does not throw an exception when the sequence is empty or when no element in the sequence satisfies the         given condition. Just like Single(), this method will still throw an exception, if more than one element in the sequence satisfies the given condition.
+      
+      //DefaultIfEmpty : If the sequence on which this method is called is not empty, then the values of the original sequence are returned.
+      
+      int[] numbers = { };
+      IEnumerable<int> result = numbers.DefaultIfEmpty();  //numbers.DefaultIfEmpty(10);
+      foreach (int i in result)
+      {
+        Console.WriteLine(i);
+      }
+
+      Output:
+      0  // 10 Incase we used numbers.DefaultIfEmpty(10);
+      
+      
+      ```
+      
+      ==> Pending <==
+      (21 to 30)
+      
+    
+     
      
      
      
