@@ -184,7 +184,8 @@
             list.Add(3);
      IEnumerable<int> result = list.Cast<int>();
      
-     //OfType operator will return only elements of the specified type. The other type elements are simply ignored and excluded from the result set.
+     //OfType operator will return only elements of the specified type. 
+     //The other type elements are simply ignored and excluded from the result set.
      //Where as 'Cast' operation will throw exception incase of conversion failure (InvalidCastException).
      
      ArrayList list = new ArrayList();
@@ -199,8 +200,10 @@
      //When your entities are connected to DB then use IQueryable ==> which help to generate the query
      //AsEnumerable() will breaks the query and gets the results into inmemory.
      //Under System.Linq NameSpace we have two classes 'Enumerable' & 'Queryable'    
-     //Queryable deals with Expressions         public static IQueryable<TResult> Select<TSource, TResult>(this IQueryable<TSource> source, Expression<Func<TSource, TResult>> selector);
-     //Enumerable deals with delegate functions public static IEnumerable<TResult> Select<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector);
+     //Queryable deals with Expressions         
+     //public static IQueryable<TResult> Select<TSource, TResult>(this IQueryable<TSource> source, Expression<Func<TSource, TResult>> selector);
+     //Enumerable deals with delegate functions 
+     //public static IEnumerable<TResult> Select<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector);
      
      ```
   * Grouping Operators
@@ -272,15 +275,22 @@
       //LastOrDefault : Very similar to FirstOrDefault, except it returns the last element of the sequence.
       
       //ElementAt : Returns an element at a specified index. 
-      //If the sequence is empty or if the provided index value is out of range, then an ArgumentOutOfRangeException is thrown.
+      //If the sequence is empty or if the provided index value is out of range. 
+      //then an ArgumentOutOfRangeException is thrown.
       
-      //ElementAtOrDefault : Similar to ElementAt except that this method does not throw an exception, if the sequence is empty or if the provided index value is out of range.         Instead, a default value of the type that is expected is returned.
+      //ElementAtOrDefault : Similar to ElementAt except that this method does not throw an exception. 
+      //if the sequence is empty or if the provided index value is out of range.         
+      //Instead, a default value of the type that is expected is returned.
 
       //Single() method throws an exception if the sequence is empty or has more than one element.
       
-      //SingleOrDefault : Very similar to Single(), except this method does not throw an exception when the sequence is empty or when no element in the sequence satisfies the         given condition. Just like Single(), this method will still throw an exception, if more than one element in the sequence satisfies the given condition.
+      //SingleOrDefault : Very similar to Single(), except this method does not throw an exception,
+      //when the sequence is empty or when no element in the sequence satisfies, 
+      //the given condition. Just like Single(), this method will still throw an exception, 
+      //if more than one element in the sequence satisfies the given condition.
       
-      //DefaultIfEmpty : If the sequence on which this method is called is not empty, then the values of the original sequence are returned.
+      //DefaultIfEmpty : If the sequence on which this method is called is not empty, 
+      //then the values of the original sequence are returned.
       
       int[] numbers = { };
       IEnumerable<int> result = numbers.DefaultIfEmpty();  //numbers.DefaultIfEmpty(10);
@@ -294,9 +304,237 @@
       
       
       ```
-      
-      ==> Pending <==
-      (21 to 30)
+  *  Group Join in LINQ
+     * Consider the following Department and Employee classes. A Department may have ZERO or MORE employees. 
+     ```
+     Department.GetAllDepartments()                                                                           .GroupJoin(Employee.GetAllEmployees()
+                            ,d => d.ID,e => e.DepartmentID,
+                            (department, employees) => new                                                                             {
+                                                Department = department,
+                                                Employees = employees
+                                            });
+     
+     foreach (var department in employeesByDepartment)
+     {
+        Console.WriteLine(department.Department.Name);
+        foreach (var employee in department.Employees)
+        {
+          Console.WriteLine(" " + employee.Name);
+        }
+        Console.WriteLine();
+     }
+     
+     ```
+  *  Inner Join in LINQ   
+     ```
+     var result = Employee.GetAllEmployees().Join(Department.GetAllDepartments(),
+                                        e => e.DepartmentID,
+                                        d => d.ID, (employee, department) => new
+                                        {
+                                            EmployeeName = employee.Name,
+                                            DepartmentName = department.Name
+                                        });
+     foreach (var employee in result)
+     {
+       Console.WriteLine(employee.EmployeeName + "\t" + employee.DepartmentName);
+     }
+     
+     //Inner Join produces the flat results 
+     //Group Join produces group name & List of results. 
+     
+     ```
+  *  Left Outer Join in LINQ
+     ```
+     //To implement Left Outer Join, with extension method syntax 
+     //we use the GroupJoin() method along with SelectMany() and DefaultIfEmpty() methods.
+     
+     var result = Employee.GetAllEmployees()
+                        .GroupJoin(Department.GetAllDepartments(),
+                                e => e.DepartmentID,
+                                d => d.ID,
+                                (emp, depts) => new { emp, depts })
+                        .SelectMany(z => z.depts.DefaultIfEmpty(),
+                                (a, b) => new
+                                {
+                                        EmployeeName = a.emp.Name,
+                                        DepartmentName = b == null ? "No Department" : b.Name
+                                });
+
+     foreach (var v in result)
+     {
+       Console.WriteLine(" " + v.EmployeeName + "\t" + v.DepartmentName);
+     }     
+     
+     ```
+  * Cross Join
+    ```
+    var result = Employee.GetAllEmployees()
+                        .SelectMany(e => Department.GetAllDepartments(), (e, d) => new { e, d });
+
+    foreach (var v in result)
+    {
+       Console.WriteLine(v.e.Name + "\t" + v.d.Name);
+    }
+
+    //Implementing cross join using Join()
+    var result = Employee.GetAllEmployees()
+                                     .Join(Department.GetAllDepartments(),
+                                               e => true,
+                                               d => true,
+                                               (e, d) => new { e, d });
+
+     foreach (var v in result)
+     {
+       Console.WriteLine(v.e.Name + "\t" + v.d.Name);
+     }
+    ```
+  * Set operators in LINQ 
+    * Distinct, Union, Intersect, Except   
+    ```
+    countries.Distinct();
+    
+    countries.Distinct(StringComparer.OrdinalIgnoreCase);
+    
+    //Distinct() on Complex objects
+    //1. Use the other overloaded version of Distinct() method to which we can pass a custom class that implements IEqualityComparer
+    //2. Override Equals() and GetHashCode() methods in Employee class
+    //3. Project the properties into a new anonymous type, which overrides Equals() and GetHashCode() methods
+    
+    Example 4 : Using the overloaded version of Distinct() method to which we can pass a custom class that implements IEqualityComparer
+
+    Step 1 : Create a custom class that implements IEqualityComparer<T> and implement Equals() and GetHashCode() methods
+
+    public class EmployeeComparer : IEqualityComparer<Employee>
+    {
+      public bool Equals(Employee x, Employee y)
+      {
+        return x.ID == y.ID && x.Name == y.Name;
+      }
+
+       public int GetHashCode(Employee obj)
+       {
+        return obj.ID.GetHashCode() ^ obj.Name.GetHashCode();
+       }
+    }
+
+    Step 2 : Pass an instance of EmployeeComparer as an argument to Distinct() method
+
+    List<Employee> list = new List<Employee>()
+    {
+    new Employee { ID = 101, Name = "Mike"},
+    new Employee { ID = 101, Name = "Mike"},
+    new Employee { ID = 102, Name = "Mary"}
+    };
+
+    var result = list.Distinct(new EmployeeComparer());
+
+    foreach (var v in result)
+    {
+       Console.WriteLine(v.ID + "\t" + v.Name);
+    }
+
+    Output:
+    iequalitycomparer example
+
+    Example 5 : Override Equals() and GetHashCode() methods in Employee class
+
+     public class Employee
+     {
+       public int ID { get; set; }
+       public string Name { get; set; }
+
+       public override bool Equals(object obj)
+       {
+        return this.ID == ((Employee)obj).ID && this.Name == ((Employee)obj).Name;
+       }
+
+       public override int GetHashCode()
+      {
+        return this.ID.GetHashCode() ^ this.Name.GetHashCode();
+      }
+     }
+
+     Example 6 : Project the properties into a new anonymous type, which overrides Equals() and GetHashCode() methods
+
+     List<Employee> list = new List<Employee>()
+     {
+       new Employee { ID = 101, Name = "Mike"},
+       new Employee { ID = 101, Name = "Mike"},
+       new Employee { ID = 102, Name = "Mary"}
+     };
+
+     var result = list.Select(x => new { x.ID, x.Name }).Distinct();
+
+     foreach (var v in result)
+     {
+       Console.WriteLine(" " + v.ID + "\t" + v.Name);
+     }
+     
+     
+     //Union combines two collections into one collection while removing the duplicate elements.
+     //For Custom types use the above solution
+     var result = numbers1.Union(numbers2);
+     
+     //ntersect() returns the common elements between the 2 collections.
+     var result = numbers1.Intersect(numbers2);
+     
+     //Except() returns the elements that are present in the first collection but not in the second collection.
+     var result = numbers1.Except(numbers2);
+     
+     
+    ```
+  * Generation Operators in LINQ
+    * Range, Repeat, Empty
+    ```
+    var evenNumbers = Enumerable.Range(1, 10).Where(x => x % 2 == 0);
+
+    //Repeat operator is used to generate a sequence that contains one repeated value.
+    Enumerable.Repeat("Hello", 5);
+    
+    //Empty operator returns an empty sequence of the specified type. For example
+    //Enumerable.Empty<int>() - Returns an empty IEnumerable<int>
+    //Enumerable.Empty<string>() - Returns an empty IEnumerable<string>
+    //IEnumerable<int> result = GetIntegerSequence() ?? Enumerable.Empty<int>();
+    
+    ```
+
+  * Concat operator in LINQ
+   ```
+   //Concat operator concatenates two sequences into one sequence.
+   var result = numbers1.Concat(numbers2);
+   
+   //Concat operator combines 2 sequences into 1 sequence. Duplicate elements are not removed. 
+   //It simply returns the items from the first sequence followed by the items from the second sequence. 
+
+   //Union operator also combines 2 sequences into 1 sequence, but will remove the duplicate elements.
+
+   ```
+  * SequenceEqual Operator in LINQ
+    ```
+    //SequenceEqual() method is used to determine whether two sequences are equal. 
+    //This method returns true if the sequences are equal otherwise false. 
+    
+    countries1.SequenceEqual(countries2);
+    countries1.SequenceEqual(countries2, StringComparer.OrdinalIgnoreCase);
+    
+    //For complex type refer the solution given for Distinct()
+    
+    ```
+  * Quantifiers in LINQ
+    * All, Any, Contains 
+    ```
+    var result = numbers.All(x => x < 10);
+    
+    var result = numbers.Any();
+    
+    var result = numbers.Any(x => x > 10);
+    
+    numbers.Contains(3);
+    
+    countries.Contains("india", StringComparer.OrdinalIgnoreCase);
+    
+    
+    ```
       
     
      
