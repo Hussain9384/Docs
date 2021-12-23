@@ -38,7 +38,7 @@
   //Seed Data
   modelBuilder.Entity<Country>().HasData(
       new Country(){ Id=1, Name="India", Code="IND" },
-      new Country(){ Id=2, Name="India", Code="IND" }
+      new Country(){ Id=2, Name="SriLanka", Code="SNK" }
   );
   
   //Common Filter
