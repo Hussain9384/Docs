@@ -410,6 +410,7 @@ public string Remarks { get; set; }
    * The ModelBuilder class exposes several methods to configure the model. Some of the important methods are listed below   
    
 * Model-wide configuration   
+
 Method|Description
 ---|---|
 HasDefaultSchema|Configures the default schema that database objects should be created in, if no schema is explicitly configured.
