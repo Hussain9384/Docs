@@ -1,5 +1,5 @@
 # Installation & Configuration
-* Required Packages (Microsoft.EntityFrameworkCore, Microsoft.EntityFrameworkCore.SqlServer, Microsoft.EntityFrameworkcore.Tools)
+* Required Packages (Microsoft.EntityFrameworkCore, Microsoft.EntityFrameworkCore.SqlServer, Microsoft.EntityFrameworkcore.SqlServer.Design , Microsoft.EntityFrameworkcore.Tools)
 * Connection String
    ```
     {
@@ -113,6 +113,7 @@ protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     * Find(Object[]), FindAsync(Object[]), FindAsync(Object[], CancellationToken)  
 * RemoveRange(IEnumerable<TEntity>), RemoveRange(TEntity[])
   
+   
 # Model Builder usage
   ```
   protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -125,7 +126,15 @@ protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
       new Country(){ Id=1, Name="India", Code="IND" },
       new Country(){ Id=2, Name="SriLanka", Code="SNK" }
   );
+   
+   //Ignore DB field
+   modelBuilder.Entity<Customer>().Ignore(t => t.LastName);
   
+   //Table name map
+   modelBuilder.Entity<Employee>()
+            .ToTable("mstEmployee")
+            .HasKey(e => e.EmployeeID);
+   
   //Common Filter
   modelBuilder.Entity<T>().HasQueryFilter(p => p.CountryCode == _currentSession.CountryCode);  // _currentSession runtime value.
   
@@ -134,7 +143,12 @@ protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
       entity.Property(p=>p.Id).ValueGeneratedOnAdd();
       entity.HasIndex(i => new { i.CountryCode, i.CountryName });
   });
-  
+   
+//Fluent Interface gives two distinct advantageous
+//Method chaining
+//More readable API Code 
+
+   
   
   ```
 * Data Type
@@ -160,4 +174,219 @@ uint?|	biint ?|	null
 short|	smallint	|not null
 ushort|	int|	not null
 char|	nvarchar(1)|	not null
+   
+#  Data Annotation   
+   * The Data annotation attributes falls into two groups depending functionality provided by them.
+   * 1) Data Modeling Attributes, 2) Validation Related Attributes 
+   *Data Modelling Attributes 
+   * Data Modeling Attributes specify the schema of the database. These attributes are present in the namespace  System.ComponentModel.DataAnnotations.Schema.The following is the list of attributes are present in the namespace.
+
+Attribute|Syntax
+   ---|---|
+Table Attribute|Table(string name, Properties:[Schema = string])
+Column Attribute| [Column (string name, Properties:[Order = int],[TypeName = string])
+Column Attribute| [Column (string name)] 
+Key Attribute| [Key] (Identity seed & Identity Increased =1)
+Key Attribute| [Key, DatabaseGenerated(DatabaseGeneratedOption.None)] (Identity seed & Identity Increased =0)
+Key Attribute|[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+Composite Primary Key|[Key] [Column(Order = 1)]  [Key][Column(Order = 2)]
+
+* ConcurrencyCheck  
+   * Concurrency Check attribute EF Core is used to handle conflicts that result when multiple users are updating (or deleting) the table at the same time. You can add the ConcurrencyCheck attribute on any property, which you want to participate in the Concurrency Check. 
+   * Assume that two users simultaneously query for same data to edit from the Employee Table. One of the users saves his changes. Now, the other user is now looking at the data, which is invalid. If he also modifies the data and saves it, it will overwrite the first user’s changes. What if both users save the data at the same time. We never know which data gets saved.
+
+   * We use the Concurrency check precisely to avoid such situations. To do that we include additional fields in the where clause apart from the primary key. For Example, by including the name field in the where clause, we are ensuring that the value in the name field has not changed since we last queried it. If someone has changed the field, then the where clause fails the Entity Framework raises the exception.
+   
+```
+    public class Employee
+    {
+        public int EmployeeID { get; set; }
+        [ConcurrencyCheck]
+        public string Name { get; set; }
+        public string Address { get; set; }
+    }
+   
+```
+   * In the above example, We decorate the Name Property with the ConcurrencyCheck attribute. When Entity Framework generates an update or delete statement, it always includes the Name column in where clause.
+
+This attribute does not affect the database mapping in any way. This attribute is similar to timestamp attribute.
+
+You can apply ConcurrencyCheck Attribute on any number of properties.
+There is no restriction on a data type for this attribute
+
+* Timestamp Attribute
+   *  Using Timestamp Attribute in Entity Framework Core is a way to handle the Concurrency issues. The Concurrency issue arises when multiple users attempt to update/delete the same row at the same time.  This issue can be handled either by using the Timestamp column or ConcurrencyCheck attribute on the property. Timestamp columns are the preferred way of using for concurrency check.
+   * You can apply Timestamp attribute to any byte array column as shown in the entity model below. The Attribute is applied to RowID Property. The entity framework automatically adds the TimeStamp columns in update/delete queries.  This attribute resides in the namespace system.componentmodel.dataannotations.schema
+   ```
+    public class Employee
+    {
+        public int EmployeeID { get; set; }
+        public string Name { get; set; }
+        public string Address { get; set; }
+        [Timestamp]
+        public byte[] RowID { get; set; }
+     }
+   ```
+   *  We can apply Timestamp attribute to only one property in the domain model.
+The data type of the Timestamp must be a byte array.
+This attribute affects the database as it creates the column with datatype rowversion. byte[]  array without Timestamp creates the varninary(max) column
+Timestamp columns are the preferred way of using for concurrency check.
+   
+*  DatabaseGenerated
+      * Computed, Identity, None
+      * The Computed option specifies that the property's value will be generated by the database when the value is first saved, and subsequently regenerated every time the value is updated. The practical effect of this is that Entity Framework will not include the property in INSERT or UPDATE statements, but will obtain the computed value from the database on retrieval.
+   ```
+   public class Contact
+   {
+    public int Id { get; set; }
+    public string FullName { get; set; }
+    public string Email { get; set; } 
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+    public DateTime LastAccessed { get; set; }
+   }
+   ```
+      * Foreign Key [ForeignKey("Department")]
+   ```
+   //Approach 1
+   public class Employee
+   {
+      public int EmployeeID { get; set; }
+      public string EmployeeName { get; set; }
+ 
+      [ForeignKey("Department")]
+      public int DeptID { get; set; }
+       
+      //Navigation property
+      public Department Department { get; set; }
+   }
+   
+   //Approach 2
+   public class Employee
+    {
+        public int EmployeeID { get; set; }
+        public string EmployeeName { get; set; }
+        
+        public int DeptID { get; set; }
+ 
+        //Navigation property
+        [ForeignKey("DeptID")]
+        public Department Department { get; set; }
+    }
+   
+    public class Department
+    {
+        public int DepartmentID { get; set; }
+        public string DepartmentName { get; set; }
+ 
+        //Navigation property
+        public ICollection<Employee> Employeees { get; set; }
+    }
+   
+   //Approach 3
+   public class Department
+    {
+        
+        public int DepartmentID { get; set; }
+        public string DepartmentName { get; set; }
+ 
+        //Navigation property
+        [ForeignKey("DeptID")]
+        public ICollection<Employee> Employeees { get; set; }
+    }
+   
+  [MaxLength(50),MinLength(10)]
+  public string Name { get; set; }
+   
+  [MaxLength(50,ErrorMessage="Name cannot be greater than 50")]
+  public string Name { get; set; }
+ 
+  [MinLength(10, ErrorMessage = "Name cannot be less than 10")]
+  public string Address { get; set; }
+   
+  [StringLength(50, MinimumLength = 10, ErrorMessage="Remark must have min length of 10 and max Length of 50")]
+public string Remarks { get; set; }
+   
+   [NotMapped] //Will not generate the column in DB
+  public int Age { get; set; }
+   
+   [Required] // Generate the column with not null property in DB
+  public string Name {get: set;} 
+   ```
+   *  Multiple Relations
+      *  The employee and department is a single relationship. What if the employee belongs to multiple departments ?. Let us take the example of flight & airports. Flight departing from one airport and arrives at another. So the flight has multiple relationships with the Airport
+      *The DepartngFlights property must map to DepartureAirport property in the airport model and ArrivingFlights property must map to ArrivalAirport property.
+
+      * The EF Core, throws the following error, when we run the migrations
+
+      * Unable to determine the relationship represented by navigation `Airport.DepartingFlights’ of type ‘ICollection’. Either manually configure the relationship, or ignore this property using the ‘[NotMapped]’ attribute or by using ‘EntityTypeBuilder.Ignore’ in ‘OnModelCreating’.
+   
+```
+   public class Flight
+    {
+        public int FlightID { get; set; }
+        public string Name { get; set; }
+        public Airport DepartureAirport { get; set; }
+        public Airport ArrivalAirport { get; set; }
+    }
+ 
+    public class Airport
+    {
+        public int AirportID { get; set; }
+        public string Name { get; set; }
+        public virtual ICollection<Flight> DepartingFlights { get; set; }
+        public virtual ICollection<Flight> ArrivingFlights { get; set; }
+    }
+//Solution 1   
+![image](https://user-images.githubusercontent.com/71544024/147359853-7fa4ab06-8e36-4326-b3a3-de4ce07be0e3.png)
+   
+      //Solution 2
+      public class Flight
+      {
+        public int FlightID { get; set; }
+        public string Name { get; set; }
+        [InverseProperty("DepartingFlights")]
+        public Airport DepartureAirport { get; set; }
+        [InverseProperty("ArrivingFlights")]
+        public Airport ArrivalAirport { get; set; }
+      }
+   
+```
+   
+* There are several methods available in EF Core Fluent API. These methods broadly classified into the three categories
+
+      * Model wide configuration (database)
+      * Entity Configuration (table)
+      * Property configuration
+   * The ModelBuilder class exposes several methods to configure the model. Some of the important methods are listed below
+
+
+   
+   
+   
+Method|Description
+---|---|
+HasDefaultSchema|Configures the default schema that database objects should be created in, if no schema is explicitly configured.
+RegisterEntityType|Registers an entity type as part of the model
+HasAnnotation|Adds or updates an annotation on the model. If an annotation with the key specified in annotation already exists its value will be updated.
+HasChangeTrackingStrategy	Configures the default ChangeTrackingStrategy to be used for this model. This strategy indicates how the context detects changes to properties for an instance of an entity type.
+Ignore	Excludes the given entity type from the model. This method is typically used to remove types from the model that were added by convention.
+HasDbFunction	Configures a database function when targeting a relational database.
+HasSequence	Configures a database sequence when targeting a relational database.
+   
+   
+      
+   
+ 
+   
+
+   
+
+
+
+   
+   
+
+   
+   
+  
 
