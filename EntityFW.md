@@ -137,4 +137,27 @@ protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
   
   
   ```
+* Data Type
+
+Data type	| Mapped	|Null ?
+   :---|:---|:---|
+string | nvarchar(max)|	Null
+decimal|	decimal(18, 2)|	Not Null
+decimal?	|decimal(18, 2)	|Null
+double|	float	|Not Null
+double?|	float	|Null
+int|	int|	Not Null
+int?|	int|	Null
+bool|	bit|	Not Null
+bool?|	bit|	Null
+DateTime|	datetime|	Not Null
+DateTime?|	datetime|	Null
+byte[]|	varbinary(max)|	Null
+byte|	tinyint|	Not Null
+byte?|	tinyint|	Null
+uint|	biint|	not null
+uint?|	biint ?|	null
+short|	smallint	|not null
+ushort|	int|	not null
+char|	nvarchar(1)|	not null
 
