@@ -48,7 +48,38 @@
     connectionString = configuration.GetConnectionString("SQLConnection");
     
    ```
-* 
+
+# Separate Configuration File per entity
+```
+public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
+{
+  public void Configure(EntityTypeBuilder<Employee> builder)
+  {
+    builder.HasKey(e => e.EmployeeID);
+  }
+}
+
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+  
+  //Configure domain classes using modelBuilder here   
+  modelBuilder.ApplyConfiguration<Employee>(new EmployeeConfiguration());
+ 
+}
+
+//Bulk Register Configurations
+//If you have many models, you will end up with many configuration files. 
+//You also have to remember to add the configuration file in the OnModelCreating method.
+
+//You can use the ApplyConfigurationsFromAssembly extension method, 
+//which uses the reflection to find all the configuration files and registers them automatically.
+
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+   modelBuilder.ApplyConfigurationsFromAssembly(typeof(EmployeeConfiguration).Assembly);
+}
+
+```
 # Commands
 * add-migration RenameTenantName
 * update database
@@ -135,6 +166,9 @@ protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             .ToTable("mstEmployee")
             .HasKey(e => e.EmployeeID);
    
+   modelBuilder.Entity<Employee>()
+                .HasKey( o=> new { o.CompanyCode, o.EmployeeCode});
+   
   //Common Filter
   modelBuilder.Entity<T>().HasQueryFilter(p => p.CountryCode == _currentSession.CountryCode);  // _currentSession runtime value.
   
@@ -143,6 +177,22 @@ protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
       entity.Property(p=>p.Id).ValueGeneratedOnAdd();
       entity.HasIndex(i => new { i.CountryCode, i.CountryName });
   });
+   
+  modelBuilder.Entity<Employee>()
+            .Ignore("Age");
+   
+modelBuilder.Ignore<TempTable>();
+   
+modelBuilder.Entity<Employee>()
+             .HasAlternateKey(e=> e.EmployeeCode);
+   
+//Update the database and you will see that the UNIQUE Constraint is added for the property EmployeeCode. 
+//The Constraint is named as AK_<EntityName>_<PropertyName>
+   
+modelBuilder.Entity<Employee>()
+             .HasAlternateKey(e=> new {e.EmployeeCode,e.EmployeeName});
+   
+ 
    
 //Fluent Interface gives two distinct advantageous
 //Method chaining
@@ -338,8 +388,9 @@ public string Remarks { get; set; }
     }
 //Solution 1   
 ![image](https://user-images.githubusercontent.com/71544024/147359853-7fa4ab06-8e36-4326-b3a3-de4ce07be0e3.png)
-   
-      //Solution 2
+
+```
+//Solution 2
       public class Flight
       {
         public int FlightID { get; set; }
@@ -348,8 +399,7 @@ public string Remarks { get; set; }
         public Airport DepartureAirport { get; set; }
         [InverseProperty("ArrivingFlights")]
         public Airport ArrivalAirport { get; set; }
-      }
-   
+      }   
 ```
    
 * There are several methods available in EF Core Fluent API. These methods broadly classified into the three categories
@@ -357,21 +407,67 @@ public string Remarks { get; set; }
       * Model wide configuration (database)
       * Entity Configuration (table)
       * Property configuration
-   * The ModelBuilder class exposes several methods to configure the model. Some of the important methods are listed below
-
-
+   * The ModelBuilder class exposes several methods to configure the model. Some of the important methods are listed below   
    
-   
-   
+* Model-wide configuration   
 Method|Description
 ---|---|
 HasDefaultSchema|Configures the default schema that database objects should be created in, if no schema is explicitly configured.
 RegisterEntityType|Registers an entity type as part of the model
 HasAnnotation|Adds or updates an annotation on the model. If an annotation with the key specified in annotation already exists its value will be updated.
-HasChangeTrackingStrategy	Configures the default ChangeTrackingStrategy to be used for this model. This strategy indicates how the context detects changes to properties for an instance of an entity type.
-Ignore	Excludes the given entity type from the model. This method is typically used to remove types from the model that were added by convention.
-HasDbFunction	Configures a database function when targeting a relational database.
-HasSequence	Configures a database sequence when targeting a relational database.
+HasChangeTrackingStrategy|Configures the default ChangeTrackingStrategy to be used for this model. This strategy indicates how the context detects changes to properties for an instance of an entity type.
+Ignore|Excludes the given entity type from the model. This method is typically used to remove types from the model that were added by convention.
+HasDbFunction|Configures a database function when targeting a relational database.
+HasSequence|Configures a database sequence when targeting a relational database.
+
+* Entity Configuration
+   
+Method|Description
+---|---|
+Ignore|Exclude the Propery from the Model.
+HasColumnName|Configures database column name of the property
+HasColumnType|Configures the database column data type of the property
+HasDefaultValue|Configures the default value for the column that the property maps to when targeting a relational database.
+HasComputedColumnSql|Configures the property to map to a computed column when targeting a relational database.
+HasField|Specifies the backing field to be used with a property.
+HasMaxLength|Specifies the maximum length of the property.
+IsConcurrencyToken|Enables the property to be used in an optimistic concurrency updates
+IsFixedLength|Configures the property to be fixed length. Use HasMaxLength to set the length that the property is fixed to.
+IsMaxLength|Configures the property to allow the maximum length supported by the database provider
+IsReguired|Specifies the database column as non-nullable.
+IsUnicode|Configures the property to support Unicode string content
+ValueGeneratedNever|Configures a property to never have a value generated when an instance of this entity type is saved.
+ValueGeneratedOnAdd|Configures a property to have a value generated only when saving a new entity, unless a non-null, non-temporary value has been set, in which case the set value will be saved instead. The value may be generated by a client-side value generator or may be generated by the database as part of saving the entity.
+ValueGeneratedOnAddOrUpdate|Configures a property to have a value generated when saving a new or existing entity.
+ValueGeneratedOnUpdate|Configures a property to have a value generated when saving an existing entity.
+   
+* Property Configuration
+
+Method|Description
+   ---|---|
+Ignore|Exclude the Propery from the Model.
+HasColumnName|Configures database column name of the property
+HasColumnType|Configures the database column data type of the property
+HasDefaultValue|Configures the default value for the column that the property maps to when targeting a relational database.
+HasComputedColumnSql|Configures the property to map to a computed column when targeting a relational database.
+HasField|Specifies the backing field to be used with a property.
+HasMaxLength|Specifies the maximum length of the property.
+IsConcurrencyToken|Enables the property to be used in an optimistic concurrency updates
+IsFixedLength|Configures the property to be fixed length. Use HasMaxLength to set the length that the property is fixed to.
+IsMaxLength|Configures the property to allow the maximum length supported by the database provider
+IsReguired|Specifies the database column as non-nullable.
+IsUnicode|Configures the property to support Unicode string content
+ValueGeneratedNever|Configures a property to never have a value generated when an instance of this entity type is saved.
+ValueGeneratedOnAdd|Configures a property to have a value generated only when saving a new entity, unless a non-null, non-temporary value has been set, in which case the set value will be saved instead. The value may be generated by a client-side value generator or may be generated by the database as part of saving the entity.
+ValueGeneratedOnAddOrUpdate|Configures a property to have a value generated when saving a new or existing entity.
+ValueGeneratedOnUpdate	Configures a property to have a value generated when saving an existing entity.
+
+```
+
+```
+
+
+
    
    
       
