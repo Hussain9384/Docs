@@ -487,7 +487,7 @@
   * Generation Operators in LINQ
     * Range, Repeat, Empty
     ```
-    var evenNumbers = Enumerable.Range(1, 10).Where(x => x % 2 == 0);
+    var evenNumbers = Enumerable.Range(1, 10).Where(x => x % 2 == 0);   // Range(1, 10) => 1,2,3,4,5,6,7,8,9,10
 
     //Repeat operator is used to generate a sequence that contains one repeated value.
     Enumerable.Repeat("Hello", 5);
@@ -578,6 +578,7 @@
      * GroupBy Is for single set IEnumerable<Customer>
      * GroupJoin is for muliple set IEnumerable<Dep> & IEnumerable<Customer>
      * Bydefault GroupJoin is left join  (We can make it left-outer-join using 'DefaultIfEmpty' inside selectmany)
+ 
      
     
      
