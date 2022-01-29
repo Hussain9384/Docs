@@ -307,7 +307,8 @@
   *  Group Join in LINQ
      * Consider the following Department and Employee classes. A Department may have ZERO or MORE employees. 
      ```
-     Department.GetAllDepartments()                                                                           .GroupJoin(Employee.GetAllEmployees()
+     Department.GetAllDepartments()
+               .GroupJoin(Employee.GetAllEmployees()
                             ,d => d.ID,e => e.DepartmentID,
                             (department, employees) => new                                                                             {
                                                 Department = department,
@@ -535,7 +536,49 @@
     
     
     ```
-      
+    
+ # Q & A
+ 
+   * Null check required? for below code ? (**NO**)
+    
+    ```
+     var x = new List<int>() { 1, 2, 3, 4, 5 };
+     var res = x.Where(s => s > 10); 
+     
+     //  x.Where(s => s > 10).ToList();
+     //  x.Where(s => s > 10).Select(x=>x);
+     
+     Console.WriteLine(res.Count());
+            
+    ```
+   * GroupBy ReturnValue
+   
+    ```
+    IEnumerable<IGrouping<TKey, TSource>> //Return Value
+    
+    public interface IGrouping<out TKey, out TElement> : IEnumerable<TElement>, IEnumerable
+    {
+        TKey Key { get; }
+    }    
+    ```
+   * DefaultIfEmpty
+     ```
+     IList<string> emptyList = new List<string>();
+
+     var newList1 = emptyList.DefaultIfEmpty(); 
+     var newList2 = emptyList.DefaultIfEmpty("None"); 
+
+     Console.WriteLine("Count: {0}" , newList1.Count()); // Count : 1
+     Console.WriteLine("Value: {0}" , newList1.ElementAt(0)); // Value : 
+
+     Console.WriteLine("Count: {0}" , newList2.Count()); // Count : 1
+     Console.WriteLine("Value: {0}" , newList2.ElementAt(0)); // Count : None
+     ```
+   * GroupBy vs GroupJoin
+     * GroupBy Is for single set IEnumerable<Customer>
+     * GroupJoin is for muliple set IEnumerable<Dep> & IEnumerable<Customer>
+     * Bydefault GroupJoin is left join  (We can make it left-outer-join using 'DefaultIfEmpty' inside selectmany)
+     
     
      
      
