@@ -407,6 +407,10 @@ IsAlive returns boolean. True if the thread is still executing otherwise false
    * ![image](https://user-images.githubusercontent.com/71544024/152690386-c90b359c-2123-43fc-81e9-f94fbb48b9d6.png)
    * Solution
    * ![image](https://user-images.githubusercontent.com/71544024/152690497-98a3749e-62cf-4530-9440-090ae0141803.png)
+ 
+ 
+ *Delegates (36)
+ 
 
          
 
