@@ -91,3 +91,185 @@ Please note: Using ParameterizedThreadStart delegate and Thread.Start(Object) me
    t.Start();
  }
  ```
+* Join blocks the current thread and makes it wait until the thread on which Join method is invoked completes. Join method also has a overload where we can specify the timeout. If we don't specify the timeout the calling thread waits indefinitely, until the thread on which Join() is invoked completes. This overloaded Join(int millisecondsTimeout) method returns boolean. True if the thread has terminated otherwise false. Join is particularly useful when we need to wait and collect result from a thread execution or if we need to do some cleanup after the thread has completed.
+
+IsAlive returns boolean. True if the thread is still executing otherwise false
+* Protecting shared resources
+ 
+  ```
+  using System;
+  using System.Threading;
+  class Program
+  { 
+    static int Total = 0;
+    public static void Main()
+    {
+        Thread thread1 = new Thread(Program.AddOneMillion);
+        Thread thread2 = new Thread(Program.AddOneMillion);
+        Thread thread3 = new Thread(Program.AddOneMillion);
+
+        thread1.Start();
+        thread2.Start();
+        thread3.Start();
+
+        thread1.Join();
+        thread2.Join();
+        thread3.Join();
+
+        Console.WriteLine("Total = " + Total);
+    }
+
+    public static void AddOneMillion()
+    {
+        for (int i = 1; i <= 1000000; i++)
+        {
+            Total++;
+        }
+      }
+    }
+
+  ```
+  * Every time we run the above program, we get a different output. The inconsistent output is because the Total field which is a shared resource is not protected from concurrent access by multiple threads. The operator ++ is not thread safe. There are several ways to fix this. Let's explore 2 of the options.
+  * Interlocked.Increment(ref Total);
+  * static object _lock = new object();  lock (_lock){ Total++; }
+  * Which option is better? From a performance perspective using Interlocked class is better over using locking. Locking locks out all the other threads except a single thread to read and increment the Total variable. This will ensure that the Total variable is updated safely. The downside is that since all the other threads are locked out, there is a performance hit.
+  * The Interlocked class can be used with addition/subtraction (increment, decrement, add, etc.) on and int or long field. The Interlocked class has methods for incrementing, decrementing, adding, and reading variables atomically.
+  ```
+    Stopwatch stopwatch = Stopwatch.StartNew(); //1 millisecond consists of 10000 ticks.
+    stopwatch.Stop();
+        stopwatch.ElapsedTicks
+         Please Note: You can use the TimeSpan object to find ticks per second, ticks per millisecond etc. 
+         Stopwatch class is in System.Diagnostics namespace.
+         
+    Monitor Vs Lock (Lock is shortcut for monitor)
+         
+    static object _lock = new object();
+ 
+        lock (_lock)
+        {
+            Total++;
+        }
+         
+        Monitor.Enter(_lock);
+        try
+        {
+            Total++;
+        }
+        finally
+        {
+            // Releases the exclusive lock
+            Monitor.Exit(_lock);
+        }
+         
+         
+                bool lockTaken = false;
+        // Acquires the exclusive lock
+        Monitor.Enter(_lock, ref lockTaken);
+        try
+        {
+            Total++;
+        }
+        finally
+        {
+            // Releases the exclusive lock
+            if (lockTaken)
+                Monitor.Exit(_lock);
+        }
+      So, in short, lock is a shortcut and it's the option for the basic usage. If you need more control to implement advanced multithreading solutions using TryEnter() Wait(),       Pulse(), & PulseAll() methods, then the Monitor class is your option.
+                                    
+      class ThreadSafe
+     {
+      static readonly object locker = new object();
+      static int val1, val2;
+
+      static void Go()
+      {
+       lock (locker)
+       {
+          if (val2 != 0) Console.WriteLine (val1 / val2);
+          val2 = 0;
+         }
+       }
+     }
+
+
+     Monitor.Enter (locker);
+         try
+         {
+           if (_val2 != 0) Console.WriteLine (val1 / val2);
+           val2 = 0;
+         }
+     finally { Monitor.Exit (locker); }
+                                    
+                                    
+                                    
+                       class OneAtATimePlease
+                       {
+                         static void Main()
+                         {
+                           // Naming a Mutex makes it available computer-wide. Use a name that's
+                           // unique to your company and application (e.g., include your URL).
+
+                           using (var mutex = new Mutex (false, "howcsharp.com OneAtATimeDemo"))
+                           {
+                             // Wait a few seconds if contended, in case another instance
+                             // of the program is still in the process of shutting down.
+
+                             if (!mutex.WaitOne (TimeSpan.FromSeconds (3), false))
+                             {
+                               Console.WriteLine ("Another app instance is running. Bye!");
+                               return;
+                             }
+                             RunProgram();
+                           }
+                         }
+
+                         static void RunProgram()
+                         {
+                           Console.WriteLine ("Running. Press Enter to exit");
+                           Console.ReadLine();
+                         }
+                       }
+                          
+         
+         
+                 class TheClub      // No door lists!
+                      {
+                        static SemaphoreSlim sem = new SemaphoreSlim (3);    // Capacity of 3
+
+                        static void Main()
+                        {
+                          for (int i = 1; i <= 5; i++)
+                            new Thread (Enter).Start(i);
+                        }
+
+                        static void Enter(object id)
+                        {
+                          Console.WriteLine (id + " wants to enter");
+                          sem.Wait();
+                          Console.WriteLine (id + " is in!");           // Only three threads
+                          Thread.Sleep (1000 * (int) id);               // can be here at
+                          Console.WriteLine (id + " is leaving");       // a time.
+                          sem.Release();
+                        }
+                      }
+
+
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+
+  ```
+
+  * ![image](https://user-images.githubusercontent.com/71544024/152676957-79c0b2ee-90c4-4db0-b3ec-449fea5802d1.png)
+
+         
+      
+   
+
+
+
+ 
