@@ -265,6 +265,8 @@ IsAlive returns boolean. True if the thread is still executing otherwise false
   ```
 
   * ![image](https://user-images.githubusercontent.com/71544024/152676957-79c0b2ee-90c4-4db0-b3ec-449fea5802d1.png)
+  * http://www.howcsharp.com/90/description-of-lock-monitor-mutex-and-semaphore.html
+  * https://www.onlinebuff.com/article_understand-monitor-vs-mutex-vs-semaphore-vs-semaphoreslim-onlinebuff_60.html
 
          
       
