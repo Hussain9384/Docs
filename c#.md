@@ -59,3 +59,35 @@ When to use ParameterizedThreadStart over ThreadStart delegate?
 Use ParameterizedThreadStart delegate if you have some data to pass to the Thread function, otherwise just use ThreadStart delegate.
 
 Please note: Using ParameterizedThreadStart delegate and Thread.Start(Object) method to pass data to the Thread function is not type safe as they operate on object datatype and any type of data can be passed. If you try to change the data type of the target parameter of PrintNumbers() function from object to int, a compiler error will be raised as the signature of PrintNumbers() function does not match with the signature of ParameterizedThreadStart delegate.
+ * Avoid parameter conversion by using the internal variable and assign values using constructor.
+ * CallBacks:
+ ```
+ public delegate void SumOfNumbersCallback(int input)
+ class NumberCompute
+    {
+        int _target
+        SumOfNumbersCallback _callbackMethod;
+        Number(int target,SumOfNumbersCallback sumOfNumbersCallback)
+        {
+            _tartget=target;
+            _callbackMethod = sumOfNumbersCallback;
+        }
+ 
+       public static void print(int input)
+       { //Do Something }
+ 
+       public void Compute()
+       { //Do Something }
+    }
+ 
+ Main()
+ {
+   SumOfNumbersCallback sumOfNumbersCallback = new SumOfNumbersCallback(print);
+   var target=20;
+   
+   NumberCompute obj= new NumberCompute(target,sumOfNumbersCallback)
+ 
+   Thread t=new Thread(new ThreadStart(obj.Compute));
+   t.Start();
+ }
+ ```
