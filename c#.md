@@ -1,5 +1,14 @@
 # Data Structure
-  * Array -> Can't Grow in size
+  * Arrays 
+    * Disadvantages: Arrays cannot grow in size once initialized. Have to rely on integral indices to store or retrieve items from the array.
+    * Advantages: Arrays are strongly typed.
+    ```
+     int[] EvenNumbers = new int[3];
+     int[] OddNumbers = { 1, 3, 5};
+
+    ```
+    
+ 
   * ArrayList -> Can grow in size but casting is required to retrive the value (ArrayList a= new ArrayList ; a.Add(0) //Add(object? value)
   * List -> Can grow in size (TypeSafe)
   * Hashtable -> Key - Value pair. Both values are Objects. So casting is required to retreive.
@@ -253,22 +262,165 @@ IsAlive returns boolean. True if the thread is still executing otherwise false
                           sem.Release();
                         }
                       }
-
-
-                                    
-                                    
-                                    
-                                    
-                                    
-                                    
-
   ```
 
   * ![image](https://user-images.githubusercontent.com/71544024/152676957-79c0b2ee-90c4-4db0-b3ec-449fea5802d1.png)
   * http://www.howcsharp.com/90/description-of-lock-monitor-mutex-and-semaphore.html
   * https://www.onlinebuff.com/article_understand-monitor-vs-mutex-vs-semaphore-vs-semaphoreslim-onlinebuff_60.html
 
+* Built-in types in C#
+    1. Boolean type – Only true or false 
+    2. Integral Types - sbyte, byte, short, ushort, int, uint, long, ulong, char
+    3. Floating Types – float and double
+    4. Decimal Types 
+    5. String Type
+* Escape sequences
+    * Without Verbatim Literal : “C:\\Pragim\\DotNet\\Training\\Csharp” – Less Readable
+    * With Verbatim Literal : @“C:\Pragim\DotNet\Training\Csharp” – Better Readable
+* String interpolation
+    * Console.WriteLine(@"Hello {MyVar}");
+* Common Operators
+    * Assignment Operator =
+    * Arithmetic Operators like +,-,*,/,% 
+    * Comparison Operators like ==, !=,>, >=, <, <= 
+    * Conditional Operators like &&, ||
+    * Ternary Operator ?:
+    * Null Coalescing Operator ??
+* Nullable Types
+    * Value Types  - int, float, double, structs, enums etc
+    * Reference Types – Interface, Class, delegates, arrays etc
+    * By default value types are non nullable. To make them nullable use ? int i = 0 (i is non nullable, so "i" cannot be set to null, i = null will generate compiler error)
+    * int? TicketsOnSale = null; 
+    * AvailableTickets = TicketsOnSale ?? 0;
+* Conversion / Casting
+    * 1. Implicit conversions 
+    * 2. Explicit Conversions 
+    * Example: Converting an int to a float will not loose any data and no exception will be thrown, hence an implicit conversion can be done. 
+    * Where as when converting a float to an int, we loose the fractional part and also a possibility of overflow exception. Hence, in this case an explicit conversion is required. For explicit conversion we can use cast operator or the convert class in c#.
+    * //Example : Explicit Conversions : int i = (int)f;
+    * 1. If the number is in a string format you have 2 options - Parse() and TryParse() 
+    * 2. Parse() method throws an exception if it cannot parse the value, whereas TryParse() returns a bool indicating whether it succeeded or failed.
+* Comments:
+    * Single line Comments -   //
+    * Multi line Comments -   /*  */
+    * XML Documentation Comments -   ///
+* Switch:
+    ```
+         Switch(gender)
+         {
+            case "Male":
+                       //Do Someting
+                       Break;
+            case "Female":
+                       //Do Someting
+                       Break;
+            default:
+                       //Not mentioned
+                      
+         }
          
+         //Assign values based on the 
+         var value = gender Switch
+         {
+            "Male" => Function1(),
+            "FeMale" => Finction2(),
+            _ => Default
+         };
+         
+    ```
+* While / DoWhile:
+    ```
+         While(i <= n)
+         {
+           //Repeat Loop
+         }
+         
+         Do
+         {
+           //This will execute atleast once
+         }While(i < =n);
+    ```
+* For / Foreach
+    ```
+         for(int i=0;i < =n ;i++ )
+         {
+         }
+         
+         foreach(var item in items)
+         {
+         }
+    ```
+* Methods/Functions
+* Method Perameters (Value / Reference /  Out / Parameter Arrays)      
+* Method Parameter vs Arguments
+   * Please make a note that the method argument and method parameter are sometimes used interchangeably. Parameters refer to the list of variables in a method declaration. Arguments are the actual values that are passed in when the method is invoked. When you invoke a method, the arguments used must match the declaration’s parameters in type and order.
+* Instance method vs Static method
+   * Staic variables is to store the data once and share across the instances.
+   * Static Constructor is used to initiate the static values.
+   * Static variables are initialized even before the instance created.
+   * Static varibles are initiated only once through static constuctor.
+   * We can't reference / use Instance variables / methods inside the static method.
+* Oops
+   * Inheritence
+     * DRY (Do not repeate yourself) - rule
+     * Reusable properties to base.
+     * Supports only single class inheritance
+     * Supports muliple iterface inheritance
+     * Base class are initiated even before the child class initiated.
+     * Parent cunstuctor will be called before child constructor.
+     * Method hiding (Same method in both Parent and clild) class.
+     * If Method hiding is intensional then use 'New'
+     * ParentClass P = new ParentClass()
+       p.Fun() // Parent will be called
+       ClildClass c= new ChildClass()
+       c.Fun() // Child method
+       ((Parent)c).fun()
+   * Polymorphism
+     * Polymorphism allow us to invoke child class object using base class ref.
+     * This is achived using the keywords 'Virtual' in parent and 'Override' in child.
+     * 'Virtual' indicates that the method can be overriden in any derived class.
+     ![image](https://user-images.githubusercontent.com/71544024/152688460-06f8585b-dc4b-457f-8bd0-098093290bce.png)
+   * Encapsulation
+     * Exposing the public varibles to external world is bad.
+     * We are not sure what they will insert into this variable // ex: empId =-10 .
+     * Properties can be called as varibles .
+     * public int Id { set { if(value <0 ) {Throw ex}} else { this._id=value; } get { return this._id }}
+     * We can do readonly by reading 'set' implementation.
+ 
+   * Method Overloding
+     * This can be done based on number , kind (value , ref , out) & type
+     * Can't include return type / params keyword / optional parameter
+     * Can be done using Private methods / properties (get-set)
+     * 
+     * 
+ * Structures vs class
+   * ![image](https://user-images.githubusercontent.com/71544024/152689601-91697d5d-0a21-42d7-90b1-56678004ed8d.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152689852-28364abd-7e56-45a6-b864-7b9a4b31fb3d.png)
+ * Interfaces
+   * ![image](https://user-images.githubusercontent.com/71544024/152689969-3f0ff59f-aaec-4336-b566-cdee646c4da7.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152690127-4866b6c2-e920-4f87-a7be-603cc984ac5b.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152690208-fb212f8d-65bc-4d5c-b6e8-52b7e3f9094a.png)
+ * Abstract Class
+   * ![image](https://user-images.githubusercontent.com/71544024/152690291-90a32e2a-4e4f-4dbf-ae8f-833cadee4022.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152690312-9bd3be5a-9ab9-4afa-b4aa-96045d0eb795.png)
+ * Problem with muli-class inheritance
+   * ![image](https://user-images.githubusercontent.com/71544024/152690386-c90b359c-2123-43fc-81e9-f94fbb48b9d6.png)
+   * Solution
+   * ![image](https://user-images.githubusercontent.com/71544024/152690497-98a3749e-62cf-4530-9440-090ae0141803.png)
+
+         
+
+                                    
+                                    
+                                    
+                                    
+   
+  
+
+     
+
+
+       
       
    
 
