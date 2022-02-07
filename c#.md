@@ -11,9 +11,41 @@
  
   * ArrayList -> Can grow in size but casting is required to retrive the value (ArrayList a= new ArrayList ; a.Add(0) //Add(object? value)
   * List -> Can grow in size (TypeSafe)
+  * ![image](https://user-images.githubusercontent.com/71544024/152848521-c97b938d-fa9b-4822-93b7-03226fb52e4f.png)
+  * ![image](https://user-images.githubusercontent.com/71544024/152848834-94464146-79a1-4ba8-9330-4cbecdb56f59.png)
+  * ![image](https://user-images.githubusercontent.com/71544024/152848944-a0afc39f-6493-4797-aabb-de1cd3eb1b6a.png)
   * Hashtable -> Key - Value pair. Both values are Objects. So casting is required to retreive.
   * Dictionary -> Strongly typed key value pair
+   * ![image](https://user-images.githubusercontent.com/71544024/152847865-8799d65c-6dd1-49d6-b9dd-9b1386064fc5.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152848199-30274034-09d5-46c0-ad5b-ec5462fe06d3.png) 
+   * ![image](https://user-images.githubusercontent.com/71544024/152851675-9e5f4d50-3905-49fc-8cbe-d45475bac972.png)
+  * Queue
+   * ![image](https://user-images.githubusercontent.com/71544024/152851850-6610e688-402c-4700-a135-dbf65217581f.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152852156-7f16df22-584c-44fe-87e8-8a3b0ce8d3b6.png)
+   
+  * Stack
+   * ![image](https://user-images.githubusercontent.com/71544024/152851951-7e1b2c26-9801-4f77-8c6d-006c47974427.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152852346-e401a451-ccd8-46b9-8f9f-9a1d8d5ba165.png)
+ 
   * SortedList -> Sorted generic Generic, Bit slower while inserting.
+  * Sorting
+    * ![image](https://user-images.githubusercontent.com/71544024/152849119-80ceafa5-a29d-4658-9741-899575e3d164.png)
+    * ![image](https://user-images.githubusercontent.com/71544024/152849367-953df9af-c390-40e6-bec5-a3d0bfe1e616.png)
+    * ![image](https://user-images.githubusercontent.com/71544024/152849635-fed44d1a-839f-44c4-ac43-d21e4d03858c.png)
+    * ![image](https://user-images.githubusercontent.com/71544024/152849841-c5c136b6-7558-4794-a007-dc8f1866da73.png)
+    * ![image](https://user-images.githubusercontent.com/71544024/152850082-5d878a63-7ed0-4868-8b73-1cfb3455dc88.png)
+  * Usefull Methods
+    * ![image](https://user-images.githubusercontent.com/71544024/152851361-9ff4c68a-644f-44d2-96e7-20493dc472b3.png)
+   
+
+# Generics
+  * ![image](https://user-images.githubusercontent.com/71544024/152842954-8165968c-4db3-418e-b84f-62c06696385e.png)
+  * ![image](https://user-images.githubusercontent.com/71544024/152843089-45d4d946-7b22-4356-a330-c5cdc7ac5724.png)
+  * ![image](https://user-images.githubusercontent.com/71544024/152843486-b283dbec-5148-4ba7-97d6-42b5cdc15218.png)
+
+# Override Equals Method
+  * ![image](https://user-images.githubusercontent.com/71544024/152845072-985c7e5c-d9a9-4db5-9e94-d696b0553d14.png)
+
 
 # New features
   * Init only setters
@@ -279,6 +311,18 @@ IsAlive returns boolean. True if the thread is still executing otherwise false
     * With Verbatim Literal : @“C:\Pragim\DotNet\Training\Csharp” – Better Readable
 * String interpolation
     * Console.WriteLine(@"Hello {MyVar}");
+    * ![image](https://user-images.githubusercontent.com/71544024/152845325-cb950bf5-af13-4265-8b64-ca0d197125d1.png)
+    * ![image](https://user-images.githubusercontent.com/71544024/152845446-3687700d-96d2-47ae-a59b-df3cabab77fc.png)
+
+* Partial Class
+    * ![image](https://user-images.githubusercontent.com/71544024/152845605-2beb71b2-3b6b-4700-ab2c-4c8675df50e5.png)
+    * ![image](https://user-images.githubusercontent.com/71544024/152845719-5046a0fc-a26d-4441-aa4c-1443096bbbd4.png)
+    * ![image](https://user-images.githubusercontent.com/71544024/152845825-13c66655-a147-4fd1-ba1f-e31f6a345070.png)
+
+* Indexers
+    * ![image](https://user-images.githubusercontent.com/71544024/152846086-b14f3a33-9bb3-4e5e-8980-930035f30d7b.png)
+ 
+        
 * Common Operators
     * Assignment Operator =
     * Arithmetic Operators like +,-,*,/,% 
@@ -392,7 +436,13 @@ IsAlive returns boolean. True if the thread is still executing otherwise false
      * Can't include return type / params keyword / optional parameter
      * Can be done using Private methods / properties (get-set)
      * 
-     * 
+ * Optional Parameters
+   * ![image](https://user-images.githubusercontent.com/71544024/152847028-5ed683fc-f469-4116-9e7d-44762ee61ab2.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152847202-6246d728-9e24-4249-a44e-d1c305351eb5.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152847276-a469660c-33a7-42b2-9e2a-3615fa276ee1.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152847465-c7c8eca7-fbb7-4533-a18b-91206f0aeaa3.png)
+   
+ 
  * Structures vs class
    * ![image](https://user-images.githubusercontent.com/71544024/152689601-91697d5d-0a21-42d7-90b1-56678004ed8d.png)
    * ![image](https://user-images.githubusercontent.com/71544024/152689852-28364abd-7e56-45a6-b864-7b9a4b31fb3d.png)
@@ -409,7 +459,37 @@ IsAlive returns boolean. True if the thread is still executing otherwise false
    * ![image](https://user-images.githubusercontent.com/71544024/152690497-98a3749e-62cf-4530-9440-090ae0141803.png)
  
  
- *Delegates (36)
+ * Delegates
+   * ![image](https://user-images.githubusercontent.com/71544024/152833840-94364bce-edc6-4ec9-b3c2-c550d9a71dee.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152835079-5ac342d0-81d2-4fed-8257-6e36b0e05b96.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152852532-cbb6913b-0760-42a9-9048-14e7cd7135b5.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152852718-d1deb0aa-6cd2-4790-8425-1a3d5b8dc936.png) 
+ 
+ * Exception Handing
+   * ![image](https://user-images.githubusercontent.com/71544024/152835641-ac301828-5018-4dd7-b204-cb408e6584de.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152835936-e2e6d38a-1955-4035-abca-f93cb1523d23.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152836375-eea0ab7e-2f62-425a-9684-17e9ee705be7.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152836795-f2103706-fbb4-41e1-819d-b431174a2987.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152837589-39bdcc12-fc21-490b-972b-72bf9c133439.png)
+ 
+ * Enums
+   * ![image](https://user-images.githubusercontent.com/71544024/152837853-553af37d-589f-4ab5-a74e-3b9e77da3bfb.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152838186-267994a6-29a7-40f8-9988-9e930e14d3ce.png)
+
+ * Types & Type Members
+   * ![image](https://user-images.githubusercontent.com/71544024/152839806-9cdf9ee8-3512-4e77-b030-090dd5249123.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152840023-dbb0f218-fe0b-48dd-86c9-bbfd98066367.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152840131-41d7820d-d62a-408c-b140-cb8de16fc3d7.png)
+
+* Attributes
+   * ![image](https://user-images.githubusercontent.com/71544024/152840334-69cbaad0-b2de-4f14-9f1f-2feaee80facf.png)
+
+* Reflection
+   * ![image](https://user-images.githubusercontent.com/71544024/152841751-7491cc8f-6c31-41f0-b95e-cee3b7f95da1.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152842554-f5b03aa5-bd1d-4225-a86a-7777b2d726ad.png)
+
+
+
  
 
          
