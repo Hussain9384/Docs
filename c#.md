@@ -464,6 +464,9 @@ IsAlive returns boolean. True if the thread is still executing otherwise false
    * ![image](https://user-images.githubusercontent.com/71544024/152835079-5ac342d0-81d2-4fed-8257-6e36b0e05b96.png)
    * ![image](https://user-images.githubusercontent.com/71544024/152852532-cbb6913b-0760-42a9-9048-14e7cd7135b5.png)
    * ![image](https://user-images.githubusercontent.com/71544024/152852718-d1deb0aa-6cd2-4790-8425-1a3d5b8dc936.png) 
+   * ![image](https://user-images.githubusercontent.com/71544024/152853067-5562dee9-9ea0-4db3-bf9d-970a47dee4f4.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152853180-3d94e151-e1f4-4626-9052-784d1523c04c.png)
+
  
  * Exception Handing
    * ![image](https://user-images.githubusercontent.com/71544024/152835641-ac301828-5018-4dd7-b204-cb408e6584de.png)
@@ -488,7 +491,11 @@ IsAlive returns boolean. True if the thread is still executing otherwise false
    * ![image](https://user-images.githubusercontent.com/71544024/152841751-7491cc8f-6c31-41f0-b95e-cee3b7f95da1.png)
    * ![image](https://user-images.githubusercontent.com/71544024/152842554-f5b03aa5-bd1d-4225-a86a-7777b2d726ad.png)
 
+* Async / Await
+   * ![image](https://user-images.githubusercontent.com/71544024/152853801-21dec564-c14d-4a0e-a829-e4923b294814.png)
+   * ![image](https://user-images.githubusercontent.com/71544024/152854869-818f246b-6071-4a67-b29d-5195389b12f0.png)
 
+  
 
  
 
