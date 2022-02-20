@@ -26,3 +26,7 @@ tsconfig.json =>If tsconfig.json files exist within the project root folder, tha
   
 ```
   
+* Life cycle
+  https://www.youtube.com/watch?v=qdvGXSUk7Mo
+
+  
