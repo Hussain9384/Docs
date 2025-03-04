@@ -160,6 +160,7 @@ C# basics
                     }
 
         Abstraction
+        ----------
                     Abstraction is the process of hiding the complex implementation details 
                     and showing only the essential features of an object. 
                     It focuses on what an object does rather than how it does it.
